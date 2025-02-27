@@ -127,34 +127,48 @@ int trans(package* p) {
 }
 
 int find_best_place(int* space, int len) {
-    int count=0;
-    int mark=0;
-    int flag=0;
-    for(int i=0;i<N;i++){
-        if(space[i]==0){
-            count++;
-        }
-        if(count>=len){//找到了
-            mark=i;
-            flag=1;
-            break;
+    int count = 0;
+    int mark = -1;  // 初始化为-1，表示未找到合适的位置
+    int i;
+    // 如果没有恰好长度为 len 的区域，寻找最小的满足条件的区域
+    if (mark == -1) {
+        int min_length = N + 1;  // 初始化最小长度为最大值
+        count = 0;
+        for (i = 0; i < N; i++) {
+            if (space[i] == 0) {
+                count++;
+                if (count == len && (i == N-1 || space[i+1] != 0)) {
+                    mark = i - count + 1;  // 记录起始位置
+                    break;  // 找到恰好长度为 len 的区域，直接退出
+                }
+                if (count >= len && count < min_length) {
+                    // 找到一个更小的合适区域
+                    mark = i - count + 1;
+                    min_length = count;
+                }
+            } else {
+                count = 0;  // 遇到非0元素，重置计数器
+            }
         }
     }
-    if(!flag){
-        printf("find_best_place failed,package doesn't fit");
-        return 1;
+
+    if (mark == -1) {
+        printf("find_best_place failed, package doesn't fit\n");
+        return -1;
     }
     return mark;
-    //找到最小大于len的位置
 }
 int find_present_biggest_slot(int* space) {
     int maxcount=0;
     int currentcount=0;
-    for(int i=0;i<N;i++){
+    int i;
+    for(i=0;i<N;i++){
         if(space[i]==0){
             currentcount++;
+            //printf("%d ",currentcount);
             if(currentcount>maxcount){
                 maxcount=currentcount;
+                //printf("%d ",maxcount);
             }
         }
         else{
