@@ -1,0 +1,13 @@
+1 2 3 4 5 6 computer lost jiangshuo
+2 8 7 6 5 4 explosion placed liuhanwen
+3 2 3 4 5 6 computer lost jiangshu
+4 2 3 4 5 6 computer lost jiangshu
+5 2 3 4 5 6 computer lost jiangs
+6 8 7 6 5 4 explosion placed liuhanwen
+7 8 7 6 5 4 eosion placed liuhanwen
+8 8 7 6 5 4 explosion placed linwen
+9 8 7 6 5 4 expion placed liuhanwen
+10 8 7 6 5 4 explosion pd liuhanwen
+11 8 7 6 5 4 explosion placed liuhanwen
+12 8 7 6 5 4 explosion plad liuhanwen
+13 8 7 6 599 4 explosion placed liuhanwen
