@@ -6,7 +6,8 @@ typedef struct PackageNode{
     int number;   //编号,与货物一一对应
     int weight;   
     int height;   
-    int width;   
+    int width;
+    char name[20];   
     char type[10];
     char situation[10];   
     char owner[20];   
@@ -18,17 +19,20 @@ typedef struct PackageNode{
 package* head_package=NULL;          //不是哨兵,只是普通的头
 package* tail_package=NULL;          //方便更新,那么就需要维护一个尾节点
 
-package *create_package(int number,int weight,int height,int width,char *type,char* owner){
+package *create_package(int number,int weight,int height,int width,char *name,char *type,char* owner){
     package * p = (package*)malloc(sizeof(package));
     p->number = number;
     p->weight = weight;
     p->height = height;
     p->width = width;
+    p->start_place = -1;
+    p->storage_place = -1;
+    strcpy(p->name,name);
     strcpy(p->type,type);
     strcpy(p->situation,"undefined");
     strcpy(p->owner,owner);
     return p;
-}
+}//制造包裹
 
 package* init_package()//初始化package链表结点
 {
@@ -40,6 +44,7 @@ package* init_package()//初始化package链表结点
     strcpy(p->type,"undefined");
     strcpy(p->situation,"undefined");
     strcpy(p->owner,"undefined");
+    strcpy(p->name,"undefined");
     p->number=0;
     p->weight=0;
     p->height=0;
@@ -64,7 +69,7 @@ void save_package(const char* filename)
     {
         //写入
         fprintf(file,"%d %d %d %d %d %d ",current->number,current->weight,current->height,current->width,current->storage_place,current->start_place);
-        fprintf(file,"%s %s %s\n",current->type,current->situation,current->owner);
+        fprintf(file,"%s %s %s %s\n",current->name,current->type,current->situation,current->owner);
         current = current->next;
     }
     fclose(file);
@@ -82,7 +87,7 @@ package* load_package(const char* filename)
     while(1)
     {
         package* p=init_package();
-        if(fscanf(file,"%d %d %d %d %d %d %s %s %s",&p->number,&p->weight,&p->height,&p->width,&p->storage_place,&p->start_place,p->type,p->situation,p->owner)!=9)
+        if(fscanf(file,"%d %d %d %d %d %d %s %s %s %s",&p->number,&p->weight,&p->height,&p->width,&p->storage_place,&p->start_place,p->name,p->type,p->situation,p->owner)!=10)
         {
             free(p);
             if(feof(file))break;
@@ -93,13 +98,13 @@ package* load_package(const char* filename)
         //将新的结点加入链表
         if(head_package==NULL)
         {
-            head_package=p;
+            head_package = p;
             tail_package = p;
         }
         else
         {
-            tail_package->next=p;
-            tail_package=p;
+            tail_package->next = p;
+            tail_package = p;
         }
     }
     fclose(file);
@@ -107,19 +112,91 @@ package* load_package(const char* filename)
 }
 
 package* check_package(int number){
+    if(head_package==NULL)
+    {
+        printf("check_package failed,货架为空\n");
+        return NULL;
+    }
+
+    //开始查找
+    package* temp=head_package;
+    while(temp)
+    {
+        if(temp->number==number)
+        {
+            printf("查找成功！");
+            return temp;
+        }
+        temp=temp->next;
+    }
+
+    //如果没找到
+        printf("check_package failed,包裹不存在\n");
+    return temp;
     //通过编号查找包裹
 }
 
 void add_package(package* p){
+    
+    //如果之前货架是空
+    if(head_package==NULL)
+    {   
+        head_package=p;
+        tail_package=p;
+    }
+    else{
+        tail_package->next=p;
+        tail_package = p;
+    }
+    p->next=NULL;
+    printf("存储包裹成功！\n");
     //将这个包裹接入包裹链表
 }
 
-void delete_package(int number){
+void delete_package(int number) {
+    if (head_package == NULL) {
+        printf("delete_package failed,货架为空\n");
+        return;
+    }
+
+    package* temp = head_package;
+    package* prev = NULL;
+
+    // 找到要删除的包裹
+    while (temp != NULL && temp->number != number) {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    if (temp == NULL) {
+        printf("delete_package failed,包裹不存在\n");
+        return;
+    }
+
+    // 删除头节点
+    if (temp == head_package) 
+    {
+        head_package = temp->next;
+        if (head_package == NULL) 
+        {
+            tail_package = NULL;  // 如果链表变为空，tail_package也需要置为NULL
+        }
+    } 
+    else 
+    {
+        prev->next = temp->next;
+    }
+
+    // 如果删除的是尾节点，更新 tail_package
+    if (temp->next == NULL) {
+        tail_package = prev;
+        tail_package->next=NULL;
+    }
+
+    free(temp);
+    printf("deleted_succeed\n");
+
     //如果包裹录入错误,那么就把它彻底抹除,从链表里删去
 }
 
-void upload_package(int number,char* situation){  //管理员能对包裹的状态进行处理
-    package* p = check_package(number);
-    strcpy(p->situation,situation);
-}
 

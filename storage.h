@@ -126,6 +126,7 @@ int trans(package* p) {
     }
 }
 
+
 int find_best_place(int* space, int len) {
     int count = 0;
     int mark = -1;  // 初始化为-1，表示未找到合适的位置
@@ -178,6 +179,7 @@ int find_present_biggest_slot(int* space) {
     return maxcount;
     //找出最大连续0数量
 }//R
+
 
 void collate(storage *p){     
     //整理 那么就需要改变下面的东西   货物的位置属性   space的模拟状态   list中货物的位置   货架的biggest_slot属性 
@@ -241,7 +243,7 @@ int place_package_to_stor(package* p) {
         if (ptr->biggest_slot >= len) {
             int starti = find_best_place(ptr->space,len); //从左边开始放
             for (int j = 0; j < len; j++) {
-                ptr->space[j + starti] = len; 
+                ptr->space[j + starti] = p->number; 
             }
             ptr->biggest_slot = find_present_biggest_slot(ptr->space);
             ptr->empty_space -= len;
@@ -268,7 +270,7 @@ int place_package_to_stor(package* p) {
         if (ptr->biggest_slot >= len) {
             int starti = find_best_place(ptr->space,len); //从左边开始放
             for (int j = 0; j < len; j++) {
-                ptr->space[j + starti] = len; 
+                ptr->space[j + starti] = p->number; 
             }
             ptr->biggest_slot = find_present_biggest_slot(ptr->space);
             ptr->empty_space -= len;
@@ -286,19 +288,131 @@ int place_package_to_stor(package* p) {
         ptr = ptr->next; // 继续遍历下一个 storage
     }
     return 0;   //整理了也放不下, 那就干脆不放了,或者放外面,处理方法这里之后有时间可以展开讨论
-}
+}//J
 
-int take_package_from_stor(package*p){
-    int n = p->storage_place;
-    storage*ptr = head_stor;
-    for(int i =0;i<n;i++){
-        ptr = ptr->next;
+//包裹是否存在
+int find_YN(int list[][3],int ID,int num)
+{
+    for(int i=0;i<num;i++)
+    {
+        if(list[i][0]==ID)
+        return i;
     }
     return 0;
-    //通过package存储的内容 找到对应的货架 通过货架的list找到package的位置 之后移除该package 更新货架状态
-    //找不到就返回 0 找到了就返回 1
-}//S
+}
 
+
+//寻找最大空位函数
+int maxblank(int space[],int n)
+{
+    int max_len = 0;  // 用于记录最大连续0的长度
+    int current_len = 0;  // 用于记录当前连续0的长度
+
+    for (int i = 0; i < n; i++)
+    {
+        if (space[i] == 0) 
+        {
+            current_len++;  // 如果是0，当前连续0的长度加1
+        } 
+        else 
+        {
+            max_len = (current_len > max_len) ? current_len : max_len;  // 更新最大连续0长度
+            current_len = 0;  // 遇到非0，重置当前连续0的长度
+        }
+    }
+
+    // 遍历结束后，处理数组最后一段连续0
+    max_len = (current_len > max_len) ? current_len : max_len;
+
+    return max_len;
+}
+
+
+//整理space[]函数
+void arrange_space(int space[],int pos,int len)
+{
+    for(int i=pos;i<pos+len;i++)
+    space[i]=0;
+}
+
+
+
+//更新list函数
+void refresh_list(int list[][3],int pos,int package_num)
+{
+    //对list更新
+   for(int i=pos;i<package_num-1;i++)
+   {
+      list[i][0]=list[i+1][0];
+      list[i][1]=list[i+1][1];
+      list[i][2]=list[i+1][2];
+   }
+}
+
+
+
+int take_package_from_stor(package*p){
+    storage* ptr = head_stor;//从该层货架头开始遍历
+    int package_ID=p->number;//货物编号
+    for(int i = 0;i<p->storage_place;i++){
+        ptr = ptr->next;
+    }
+    //如果货架为空，则返回
+    if(head_stor==NULL)
+    {
+        printf("take_package_from_stor failed,货架为空");
+        return 0;
+    }
+
+
+    //先判断包裹是否存在,若存在，则记录在list中的位置
+    int flag=find_YN(ptr->list,package_ID,ptr->package_num);
+    if(!flag) //若不存在
+    {
+        printf("take_package_from_stor failed,无法找到此包裹");
+        return 0; //不存在返回0
+    }
+
+     //若存在
+     //记录目标包裹的占位长度
+      int len = ptr->list[flag][2];
+     //记录目标包裹space的位置
+      int pos = ptr->list[flag][1];
+    
+
+    //从货架拿出包裹
+    arrange_space(ptr->space,pos,len);
+
+    //如果拿出包裹后货架为空则无需整理并返回1
+    if(head_stor==NULL)
+    {
+        printf("查找成功！\n");
+        return 1;
+    }
+
+
+    //整理第一个包裹位置
+    refresh_list(ptr->list,flag,ptr->package_num);
+
+    //记录拿出包裹后最大空位长度
+    int maxlen=maxblank(ptr->space,100);
+    
+    
+    while(ptr)
+    {
+        refresh_list(ptr->list,flag,ptr->package_num);
+        (ptr->empty_space)++;
+        (ptr->package_num)--;
+        ptr->biggest_slot=maxlen;
+        arrange_space(ptr->space,pos,len); 
+        ptr=ptr->next;
+    }
+    
+    printf("查找成功！");
+    return 1;
+    //通过package存储的内容 找到对应的货架 通过货架的list找到package的位置  更新货架状态
+    //找不到就返回 0 找到了就返回 1
+}
 
 
 

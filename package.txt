@@ -1,13 +1,20 @@
-1 2 3 4 5 6 computer lost jiangshuo
-2 8 7 6 5 4 explosion placed liuhanwen
-3 2 3 4 5 6 computer lost jiangshu
-4 2 3 4 5 6 computer lost jiangshu
-5 2 3 4 5 6 computer lost jiangs
-6 8 7 6 5 4 explosion placed liuhanwen
-7 8 7 6 5 4 eosion placed liuhanwen
-8 8 7 6 5 4 explosion placed linwen
-9 8 7 6 5 4 expion placed liuhanwen
-10 8 7 6 5 4 explosion pd liuhanwen
-11 8 7 6 5 4 explosion placed liuhanwen
-12 8 7 6 5 4 explosion plad liuhanwen
-13 8 7 6 599 4 explosion placed liuhanwen
+1 20 3 3 0 0 gold valuable placed Sunny
+2 1 10 10 0 0 box oversized placed JiangShuoYang
+3 2 2 2 0 0 light normal placed LiuHanWen
+4 1 1 1 0 0 key normal placed SuZhaoLong
+5 2 3 2 0 0 charger normal placed RenYvJia
+6 4 4 3 0 0 food normal placed Coco
+7 5 2 7 0 0 books normal placed Cici
+8 1 2 3 0 0 bowl normal placed Helen
+9 2 3 4 0 0 fufu normal placed Sunny
+10 2 3 1 0 0 gloves normal placed Sunny
+11 3 4 3 0 0 drinks normal placed Sunny
+12 4 4 4 0 0 bottles normal placed Sunny
+13 8 4 6 0 0 keyboard normal placed Sunny
+14 7 5 3 0 0 books normal placed Sunny
+15 1 1 1 0 0 decorations normal placed Sunny
+16 2 3 3 0 0 tissues normal placed Sunny
+17 1 1 4 0 0 blacktea normal placed Sunny
+18 5 1 4 0 0 pills normal placed Sunny
+19 3 3 3 0 0 socks normal placed Sunny
+20 1 1 1 0 0 shoes normal placed Sunny
